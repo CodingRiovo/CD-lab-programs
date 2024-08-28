@@ -1,0 +1,137 @@
+Grammar
+
+    0 $accept: S $end
+
+    1 S: TYPE E
+
+    2 E: ARR ';'
+    3  | VAR ';'
+    4  | ARR ',' E
+    5  | VAR ',' E
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+',' (44) 4 5
+';' (59) 2 3
+error (256)
+TYPE (258) 1
+ARR (259) 2 4
+VAR (260) 3 5
+
+
+Nonterminals, with rules where they appear
+
+$accept (8)
+    on left: 0
+S (9)
+    on left: 1, on right: 0
+E (10)
+    on left: 2 3 4 5, on right: 1 4 5
+
+
+state 0
+
+    0 $accept: . S $end
+
+    TYPE  shift, and go to state 1
+
+    S  go to state 2
+
+
+state 1
+
+    1 S: TYPE . E
+
+    ARR  shift, and go to state 3
+    VAR  shift, and go to state 4
+
+    E  go to state 5
+
+
+state 2
+
+    0 $accept: S . $end
+
+    $end  shift, and go to state 6
+
+
+state 3
+
+    2 E: ARR . ';'
+    4  | ARR . ',' E
+
+    ';'  shift, and go to state 7
+    ','  shift, and go to state 8
+
+
+state 4
+
+    3 E: VAR . ';'
+    5  | VAR . ',' E
+
+    ';'  shift, and go to state 9
+    ','  shift, and go to state 10
+
+
+state 5
+
+    1 S: TYPE E .
+
+    $default  reduce using rule 1 (S)
+
+
+state 6
+
+    0 $accept: S $end .
+
+    $default  accept
+
+
+state 7
+
+    2 E: ARR ';' .
+
+    $default  reduce using rule 2 (E)
+
+
+state 8
+
+    4 E: ARR ',' . E
+
+    ARR  shift, and go to state 3
+    VAR  shift, and go to state 4
+
+    E  go to state 11
+
+
+state 9
+
+    3 E: VAR ';' .
+
+    $default  reduce using rule 3 (E)
+
+
+state 10
+
+    5 E: VAR ',' . E
+
+    ARR  shift, and go to state 3
+    VAR  shift, and go to state 4
+
+    E  go to state 12
+
+
+state 11
+
+    4 E: ARR ',' E .
+
+    $default  reduce using rule 4 (E)
+
+
+state 12
+
+    5 E: VAR ',' E .
+
+    $default  reduce using rule 5 (E)
