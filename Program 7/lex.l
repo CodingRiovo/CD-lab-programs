@@ -2,10 +2,11 @@
     #include "y.tab.h"
 %}
 %%
-"int"|"float"|"char"|"double" {return TYPE;}
-[a-zA-Z_][a-zA-Z_0-9]* {return ID;}
+"int"|"float"|"char" {return TYPE;}
+"return" {return RET;}
+[a-zA-Z_][a-zA-Z0-9_]* {return ID;}
 [0-9]+ {return NUM;}
-[ \t\n] {}
 "~~" {return 0;}
+[ \t\n] {}
 . {return yytext[0];}
 %%

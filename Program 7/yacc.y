@@ -1,43 +1,39 @@
 %{
-    #include<stdio.h>
-    #include<stdlib.h>
+	#include<stdio.h>
+	#include<stdlib.h>
 %}
-%token NUM TYPE ID
+%token TYPE ID NUM RET
 %%
-S:TYPE ID '(' PARAMS ')' BODY {printf("Accepted\n");}
-|TYPE ID '('')' BODY {printf("Accepted\n");};
-PARAMS:TYPE ID ',' PARAMS
-|TYPE ID
-;
-BODY:'{' SS '}';
-SS:S1 ';' SS
+S: TYPE ID '(' PARAMS ')' BODY
+| TYPE ID '(' ')' BODY;
+PARAMS: TYPE ID ',' PARAMS
+| TYPE ID;
+BODY: '{' SS '}';
+SS: S1 ';' SS
+| RET ';'
+| RET ID';'
+| RET E';'
+| RET ASSGN';'
 |
 ;
-S1:ASSGN|DECL|E;
-DECL:TYPE ID|TYPE ASSGN;
-ASSGN:ID '=' E;
-E:E'+'E
-|E'-'E
-|E'*'E
-|E'/'E
-|E'+''+'
-|E'-''-'
-|'+''+'E
-|'-''-'E
-|'(' E ')'
-|T;
-T:NUM|ID;
+S1: DECL|ASSGN|E;
+DECL: TYPE ID
+| TYPE ASSGN;
+ASSGN: ID '=' E;
+E: E '+' E|E '-' E|E '*' E|E '/' E|'('E')'|E'+''+'|E'-''-'|'+''+'E|'-''-'E|T;
+T: ID|NUM;
 %%
-void yyerror(char* msg)
-{
-    printf("Error: %s\n", msg);
-    exit(0);
-}
-int yywrap()
-{
+int yywrap(){
     return 1;
 }
-int main(){
-    yyparse();
-    return 0;
+int yyerror(char *s){
+    printf("Error: %s\n", s);
+    exit(1);
+}
+
+int main()
+{
+	yyparse();
+	printf("Accepted\n");
+	return 0;
 }
