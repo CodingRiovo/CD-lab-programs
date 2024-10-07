@@ -1,20 +1,21 @@
 %{
     #include<stdio.h>
     #include<stdlib.h>
-    int maxCnt = 1;
-    int cnt;
+    int nesting = 0;
 %}
 %token ID LOGOP IF NUM TYPE
+%left '+' '-'
+%left '*' '/'
 %%
-S:I {cnt = 1;};
-I:IF '(' COND ')' BODY;
+SS: S1 ';' SS {$$=$3;}
+|I SS {$$ = max($1, $2); nesting = max(nesting, $$);}
+| {$$ = 0;};
+I:IF '(' COND ')' BODY {$$ = $5+1;};
 COND: T LOGOP T;
-BODY: S1 ';'|'{' SS '}'
-|I {cnt++; if(cnt > maxCnt) maxCnt = cnt;}
-|';';
-SS: S1 ';' SS|I SS {cnt++; if(cnt > maxCnt) maxCnt = cnt;}
-|
-;
+BODY: S1 ';' {$$ = 0;}
+|'{' SS '}' {$$ = $2;}
+|I {$$ = $1;}
+|';' {$$ = 0;};
 S1:DECL|ASSGN|E;
 DECL: TYPE ASSGN|TYPE ID;
 ASSGN: ID '=' E;
@@ -28,8 +29,11 @@ void yyerror(char* msg){
     printf("Error: %s\n", msg);
     exit(0);
 }
+int max(int a, int b){
+	return (a>b)?a:b;
+}
 int main(){
     yyparse();
-    printf("maximum nesting: %d levels\n", maxCnt);
+    printf("maximum nesting: %d levels\n", nesting);
     return 0;
 }
