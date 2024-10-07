@@ -55,7 +55,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 21 "yacc.y"
+#line 18 "yacc.y"
 
 	char* exp;
 

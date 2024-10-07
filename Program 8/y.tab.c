@@ -73,9 +73,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int yylex();
-int yyerror();
-
 typedef char* string;
 
 struct{
@@ -90,7 +87,7 @@ string addToTable(string, string,char);
 
 
 /* Line 189 of yacc.c  */
-#line 94 "y.tab.c"
+#line 91 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -133,14 +130,14 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 21 "yacc.y"
+#line 18 "yacc.y"
 
 	char* exp;
 
 
 
 /* Line 214 of yacc.c  */
-#line 144 "y.tab.c"
+#line 141 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -152,7 +149,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 156 "y.tab.c"
+#line 153 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -437,8 +434,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    34,    34,    35,    38,    40,    41,    42,    43,    44,
-      45,    46,    47
+       0,    31,    31,    32,    35,    37,    38,    39,    40,    41,
+      42,    43,    44
 };
 #endif
 
@@ -1349,63 +1346,63 @@ yyreduce:
         case 5:
 
 /* Line 1455 of yacc.c  */
-#line 40 "yacc.y"
+#line 37 "yacc.y"
     { (yyval.exp)=addToTable((yyvsp[(1) - (3)].exp),(yyvsp[(3) - (3)].exp),'+');}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 41 "yacc.y"
+#line 38 "yacc.y"
     { (yyval.exp)=addToTable((yyvsp[(1) - (3)].exp),(yyvsp[(3) - (3)].exp),'-');}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 42 "yacc.y"
+#line 39 "yacc.y"
     { (yyval.exp)=addToTable((yyvsp[(1) - (3)].exp),(yyvsp[(3) - (3)].exp),'*');}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 43 "yacc.y"
+#line 40 "yacc.y"
     { (yyval.exp)=addToTable((yyvsp[(1) - (3)].exp),(yyvsp[(3) - (3)].exp),'/');}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 44 "yacc.y"
+#line 41 "yacc.y"
     { (yyval.exp)=addToTable((yyvsp[(1) - (3)].exp),(yyvsp[(3) - (3)].exp),'=');}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 45 "yacc.y"
+#line 42 "yacc.y"
     { (yyval.exp)=(yyvsp[(2) - (3)].exp);}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 46 "yacc.y"
+#line 43 "yacc.y"
     { (yyval.exp)=(yyvsp[(1) - (1)].exp);}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 47 "yacc.y"
+#line 44 "yacc.y"
     { (yyval.exp)=(yyvsp[(1) - (1)].exp);}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1409 "y.tab.c"
+#line 1406 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1617,7 +1614,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 49 "yacc.y"
+#line 46 "yacc.y"
 
 
 int yyerror(){
@@ -1679,10 +1676,12 @@ void assembly()
 			case '=' : instr="MOV"; break;
 		}
 		if(instr == "MOV"){
-			printf("STR %s, %s\n",code[i].res, code[i].op1);
+			printf("LOAD R4, %s\n",code[i].op1);
+			printf("STR %s, R4\n",code[i].res);
 
 		}
 		else{
+			printf("LOAD R1, %s\n",code[i].op1);
 			printf("LOAD R2, %s\n",code[i].op2);
 			printf("%s R3, R1, R2\n", instr);
 			printf("STR %s, R3\n", code[i].res);
