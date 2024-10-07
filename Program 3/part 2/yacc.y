@@ -1,42 +1,22 @@
 %{
 	#include<stdio.h>
 	#include<stdlib.h>
-	int cnt=0;
+	int nesting=0;
 %}
 %token FOR ID NUM TYPE OP
+%left '+' '-'
+%left '*' '/'
 %%
-
-// Tokens
-
-// FOR -> for
-// ID -> identifier
-// NUM -> number
-// TYPE -> datatype
-// OP -> relational operator
-
-// Non-terminals
-
-// S -> Start symbol
-// BODY -> Body  of For loop
-// COND -> Condition
-// S1 -> Single Statement
-// SS -> Set of statements
-// T -> Term
-// E -> Expression
-// F -> For loop block
-// DA -> Declaration or assignment
-// DECL -> Declaration
-// ASSGN -> Assignment
-
-S:F;
-F:FOR'('DA';'COND';'S1')'BODY { cnt++; } |
-  FOR'(' ';'COND';'S1')'BODY { cnt++; } |
-  FOR'('DA';' ';'S1')'BODY { cnt++; } |
-  FOR'('DA';'COND';' ')'BODY { cnt++; } |
-  FOR'(' ';' ';'S1')'BODY { cnt++; } |
-  FOR'('DA';' ';' ')'BODY { cnt++; } |
-  FOR'(' ';'COND';' ')'BODY { cnt++; } |
-  FOR'(' ';' ';' ')'BODY { cnt++; };
+S:F S {$$ = max($1, $2); nesting = max(nesting, $$);} 
+| F {$$ = $1;};
+F:FOR'('DA';'COND';'S1')'BODY { $$ = $9+1; } |
+  FOR'(' ';'COND';'S1')'BODY { $$ = $8+1; } |
+  FOR'('DA';' ';'S1')'BODY { $$ = $8+1; } |
+  FOR'('DA';'COND';' ')'BODY { $$ = $8+1; } |
+  FOR'(' ';' ';'S1')'BODY { $$ = $7+1; } |
+  FOR'('DA';' ';' ')'BODY { $$ = $7+1; } |
+  FOR'(' ';'COND';' ')'BODY { $$ = $7+1; } |
+  FOR'(' ';' ';' ')'BODY { $$ = $6+1; };
 
 DA:DECL|ASSGN
 DECL: TYPE ID | TYPE ASSGN;
@@ -44,9 +24,14 @@ ASSGN : ID '=' E;
 COND : T OP T;
 T : NUM | ID ;
 
-BODY: S1';' | '{'SS'}' | F |';';
+BODY: S1';' {$$ = 0;}
+| '{'SS'}' {$$ = $2;}
+| F {$$ = $1;}
+|';' {$$ = 0;};
 
-SS: S1 ';' SS | F SS |;
+SS: S1 ';' SS {$$ = $3;}
+| F SS {$$ = max($1,$2); nesting = max(nesting, $$);}
+| {$$ = 0;};
 S1: ASSGN | E | DECL ;
 E : E '+' E | E '-' E | E '*' E | E '/' E | '-''-'E | '+''+'E | E'+''+' | E'-''-' | T ;
 %%
@@ -57,10 +42,13 @@ int yyerror(char *s){
     printf("Error: %s\n", s);
     exit(1);
 }
+int max(int a, int b){
+	return (a>b)?a:b;
+}
 int main()
 {
 	printf("Enter the snippet:\n");
 	yyparse();
-	printf("Count of for : %d\n",cnt);
+	printf("Maximum nesting : %d\n",nesting+1);
 	return 0;
 }
