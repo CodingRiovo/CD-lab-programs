@@ -2,9 +2,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int yylex();
-int yyerror();
-
 typedef char* string;
 
 struct{
@@ -107,10 +104,12 @@ void assembly()
 			case '=' : instr="MOV"; break;
 		}
 		if(instr == "MOV"){
-			printf("STR %s, %s\n",code[i].res, code[i].op1);
+			printf("LOAD R4, %s\n",code[i].op1);
+			printf("STR %s, R4\n",code[i].res);
 
 		}
 		else{
+			printf("LOAD R1, %s\n",code[i].op1);
 			printf("LOAD R2, %s\n",code[i].op2);
 			printf("%s R3, R1, R2\n", instr);
 			printf("STR %s, R3\n", code[i].res);
