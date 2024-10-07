@@ -39,12 +39,12 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     IDEN = 258,
+     ID = 258,
      NUM = 259
    };
 #endif
 /* Tokens.  */
-#define IDEN 258
+#define ID 258
 #define NUM 259
 
 
@@ -55,9 +55,9 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 22 "yacc.y"
+#line 21 "yacc.y"
 
-char *exp;
+	char* exp;
 
 
 
