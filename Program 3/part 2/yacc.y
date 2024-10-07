@@ -7,21 +7,17 @@
 %left '+' '-'
 %left '*' '/'
 %%
-S:F S {$$ = max($1, $2); nesting = max(nesting, $$);} 
-| F {$$ = $1;};
-F:FOR'('DA';'COND';'S1')'BODY { $$ = $9+1; } |
-  FOR'(' ';'COND';'S1')'BODY { $$ = $8+1; } |
-  FOR'('DA';' ';'S1')'BODY { $$ = $8+1; } |
-  FOR'('DA';'COND';' ')'BODY { $$ = $8+1; } |
-  FOR'(' ';' ';'S1')'BODY { $$ = $7+1; } |
-  FOR'('DA';' ';' ')'BODY { $$ = $7+1; } |
-  FOR'(' ';'COND';' ')'BODY { $$ = $7+1; } |
-  FOR'(' ';' ';' ')'BODY { $$ = $6+1; };
 
-DA:DECL|ASSGN
+SS: S1 ';' SS {$$ = $3;}
+| F SS {$$ = $1>$2?$1:$2; nesting = max(nesting, $$);}
+| {$$ = 0;};
+
+F:FOR'('DA';'COND';'S1')'BODY { $$ = $9+1; };
+
+DA:DECL|ASSGN| ;
 DECL: TYPE ID | TYPE ASSGN;
 ASSGN : ID '=' E;
-COND : T OP T;
+COND : T OP T| ;
 T : NUM | ID ;
 
 BODY: S1';' {$$ = 0;}
@@ -29,10 +25,7 @@ BODY: S1';' {$$ = 0;}
 | F {$$ = $1;}
 |';' {$$ = 0;};
 
-SS: S1 ';' SS {$$ = $3;}
-| F SS {$$ = max($1,$2); nesting = max(nesting, $$);}
-| {$$ = 0;};
-S1: ASSGN | E | DECL ;
+S1: ASSGN | E | DECL| ;
 E : E '+' E | E '-' E | E '*' E | E '/' E | '-''-'E | '+''+'E | E'+''+' | E'-''-' | T ;
 %%
 int yywrap(){
@@ -49,6 +42,6 @@ int main()
 {
 	printf("Enter the snippet:\n");
 	yyparse();
-	printf("Maximum nesting : %d\n",nesting+1);
+	printf("Maximum nesting : %d\n",nesting);
 	return 0;
 }
