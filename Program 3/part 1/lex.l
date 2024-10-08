@@ -6,7 +6,7 @@
 %}
 %%
 "//"[^\n]*	{single++;fprintf(commentFile,"%s\n",yytext);}
-"/*"([^*]|[*]+[^*/]|[*]*)*"*/"	{
+"/*"([^*]|[*]+[^*/])*"*/"	{
 	multi++;
 	for(int i=0;i<yyleng;i++)
 	{
